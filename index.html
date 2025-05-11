@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thaudio Music</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    :root {
+      --primary: #4CAF93;
+      --secondary: #8BC34A;
+      --accent: #FFC107;
+    }
+
+    body {
+      background: linear-gradient(135deg, #2196F3 0%, #4CAF50 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* === SIGNUP PAGE === */
+    .signup-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .signup-card {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .signup-card h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color:beige;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      color: #333;
+      font-size: 1em;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border: 2px solid var(--primary);
+    }
+
+    .input-group label {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: rgba(51, 51, 51, 0.7);
+      font-size: 0.9em;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus + label,
+    .input-group input:valid + label {
+      top: -10px;
+      left: 10px;
+      font-size: 0.8em;
+      color: var(--accent);
+    }
+
+    /* Placeholder-fix for floating label */
+    .input-group input:placeholder-shown + label {
+      top: 50%;
+      left: 15px;
+      font-size: 0.9em;
+      color: rgba(51, 51, 51, 0.7);
+    }
+
+    .signup-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* === AUDIO PLAYER === */
+    .player-section {
+      display: none;
+    }
+
+    #player:target {
+      display: block;
+    }
+
+    #player:target ~ .signup-section {
+      display: none;
+    }
+
+    .player-container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .player-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .player-header h1 {
+      font-size: 2.5em;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color:beige;
+    }
+
+    .track-list {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .track-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .track-item:hover {
+      transform: translateY(-5px);
+      background: rgba(76, 175, 147, 0.2);
+    }
+
+    .track-item img {
+      width: 200px;
+      height: 200px;
+      border-radius: 15px;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+
+    .track-title {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .track-item audio {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .track-description {
+      background: rgba(139, 195, 74, 0.2);
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 3px solid #4CAF93;
+      line-height: 1.6;
+      color: #333;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .error-message {
+      color: #F44336;
+      font-size: 0.8em;
+      margin-top: 5px;
+      display: none;
+    }
+
+    input:invalid:focus {
+      border-color: #F44336;
+      animation: shake 0.3s;
+    }
+
+    input:invalid:focus ~ .error-message {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Responsive Enhancements */
+    @media (max-width: 480px) {
+      .signup-card, .player-container {
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .track-item img {
+        width: 100%;
+        height: auto;
+      }
+
+      .track-description {
+        font-size: 0.9em;
+      }
+
+      .track-title {
+        font-size: 1em;
+      }
+
+      .signup-card h1, .player-header h1 {
+        font-size: 2em;
+      }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      color: #fff;
+      margin-top: 50px;
+      font-size: 0.9em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Player Section (hidden by default) -->
+  <div id="player" class="player-section">
+    <div class="player-container">
+      <div class="player-header">
+        <h1>Thaudio</h1>
+        <p>Harmonize Your World</p>
+      </div>
+      <div class="track-list">
+        <!-- Tracks -->
+        <div class="track-item">
+          <img src="art1.jpg" alt="Blue Yung Kai" />
+          <div class="track-title">1.Blue</div>
+          <audio controls>
+            <source src="digital_dreams.mp3" type="audio/mpeg" />
+          </audio>
+          <div class="track-description">
+            <p>"Blue" by Yung Kai (formerly known as Ykaizzk) is a dreamy, heartfelt song exploring the emotions of young love, particularly the initial rush of feelings and the desire for a lasting connection. The song's key features include its soft, wistful vocals, evocative imagery, and a soaring chorus that emphasizes a longing for a shared future. The lyrics paint a picture of young love, filled with hope and longing, with the chorus echoing the desire for a lasting commitment. </p>
+            <p>Released: 2025 | Genre: Indonesian Pop</p>
+          </div>
+        </div>
+
+        <div class="track-item">
+          <img src="art2.jpg" alt="Line Without a Hook by Ricky Montgomery" />
+          <div class="track-title">2. Line Without a Hook</div>
+          <audio controls>
+            <source src="neon_nights.mp3" type="audio/mpeg" />
+          </audio>
+          <div class="track-description">
+            <p>"Line Without a Hook" by Ricky Montgomery is a song about a relationship that's falling apart, exploring themes of disillusionment, the loss of passion, and the desire for something more. The lyrics delve into the narrator's feelings of emotional detachment and the questioning of their partner's love and worthiness. </p>
+            <p>Released: 2016 | Genre:  Alternative/Indie, Pop</p>
+          </div>
+        </div>
+
+        <div class="track-item">
+          <img src="art3.jpg" alt="1D" />
+          <div class="track-title">3. Teenage Dirtbag - One Direction</div>
+          <audio controls>
+            <source src="cosmic_pulse.mp3" type="audio/mpeg" />
+          </audio>
+          <div class="track-description">
+            <p>One Direction's cover of Wheatus' "Teenage Dirtbag" is a vibrant, energetic performance often described as a "dream" or a "superhero" moment by fans. The band delivers a rock-infused interpretation, complete with pyrotechnics, comic book imagery projected on a screen, and the members dressed in rock-star attire. While not an original song, the cover is a well-remembered highlight of One Direction's "This Is Us" tour and is seen as an indicator of their evolving musical direction.</p>
+            <p>Released: 2013 | Genre: pop rock/alternative , pop/pop punk</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back to Signup Button -->
+      <a href="#" class="signup-btn" style="display: block; max-width: 200px; margin: 30px auto 0; text-align: center;">Back to Signup</a>
+    </div>
+  </div>
+
+  <!-- Signup Section -->
+  <div class="signup-section">
+    <form class="signup-card" action="#player" method="get">
+      <h1>Join Thaudio</h1>
+      <div class="input-group">
+        <input type="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder=" " />
+        <label>Email Address</label>
+        <div class="error-message">Please enter a valid email address</div>
+      </div>
+      <div class="input-group">
+        <input type="password" required pattern=".{6,}" />
+        <label>Password</label>
+        <div class="error-message">Minimum 6 characters</div>
+      </div>
+      <button type="submit" class="signup-btn">Enter Soundscape</button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Sukham Music. All rights reserved.
+  </footer>
+
+</body>
+</html>
